@@ -85,7 +85,7 @@ func handleimgOLD(w http.ResponseWriter, req *http.Request) {
 	png := genPNG(col[:], rnd)
 
 	w.Header().Set("Content-Type", "image/png")
-	w.Header().Set("Content-Lnegth", string(len(png)))
+	w.Header().Set("Content-Length", string(len(png)))
 
 	_, _ = w.Write(png)
 }
