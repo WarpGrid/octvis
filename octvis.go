@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math"
 	"math/rand"
 	"bytes"
@@ -12,10 +11,6 @@ import (
 	"net/http"
 )
 
-func hello(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "hello\n")
-}
-
 func hexcol(col uint32) color.RGBA {
 	b := uint8(col)
 	col >>= 8
@@ -23,27 +18,6 @@ func hexcol(col uint32) color.RGBA {
 	col >>= 8
 	r := uint8(col)
 	return color.RGBA{r, g, b, 255}
-}
-
-func headers(w http.ResponseWriter, req *http.Request) {
-	for name, headers := range req.Header {
-		for _, h := range headers {
-			fmt.Fprintf(w, "%v: %v\n", name, h)
-		}
-	}
-
-	qry := req.URL.Query()
-	fmt.Fprintf(w, "query: %v\n", qry)
-
-	cols := qry["c"]
-	for i := 0; i < len(cols); i++ {
-		c, err := strconv.ParseUint(cols[i], 16, 32)
-		if err != nil {
-			fmt.Fprintf(w, "err %v %v\n", err, cols[i])
-		} else {
-			fmt.Fprintf(w, "%v\n", hexcol(uint32(c)))
-		}
-	}
 }
 
 func point(img *image.RGBA, x int, y int, c color.Color) {
@@ -163,10 +137,6 @@ func handleimg(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	fmt.Printf("starting\n")
-//	http.HandleFunc("/hello", hello)
-//	http.HandleFunc("/headers", headers)
 	http.HandleFunc("/image", handleimg)
-//	http.HandleFunc("/image2", handleimg2)
 	http.ListenAndServe(":8090", nil)
 }
