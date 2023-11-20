@@ -12,6 +12,6 @@ COPY *.go ./
 
 RUN go build -o /octvis
 
-EXPOSE 8090
+EXPOSE 5020
 
 CMD [ "/octvis" ]
