@@ -1,7 +1,6 @@
 package main
 
 import (
-	"math"
 	"math/rand"
 	"bytes"
 	"strconv"
@@ -20,15 +19,8 @@ func hexcol(col uint32) color.RGBA {
 	return color.RGBA{r, g, b, 255}
 }
 
-func point(img *image.RGBA, x int, y int, c color.Color) {
-	b := img.Bounds()
-	if x < b.Min.X || x >= b.Max.X { return }
-	if y < b.Min.Y || y >= b.Max.Y { return }
-	img.Set(x, y, c)
-}
-
 func genPNG(col []color.RGBA, rnd *rand.Rand) []byte {
-	width := 1024
+	width := 1794
 	height := 1024
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 
@@ -49,23 +41,25 @@ func genPNG(col []color.RGBA, rnd *rand.Rand) []byte {
 	r[0] = 10000000
 	r = r.Normalized()
 
-	for y := 0; y < 1024; y++ {
-		for x := 0; x < 1024; x++ {
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
 			img.Set(x, y, color.RGBA{0, 0, 0, 255})
 		}
 	}
-	sc := float64(0.5)
-	for i := 0; i < 100000; i++ {
-		w := float32(math.Floor(float64(width)*sc))
-		h := float32(math.Floor(float64(height)*sc))
 
-		point(img, width/2+int(p[1]*w), height/2+int(p[7]*h), col[0])
-		point(img, width/2+int(p[2]*w), height/2+int(p[7]*h), col[1])
-		point(img, width/2+int(p[3]*w), height/2+int(p[7]*h), col[2])
-		point(img, width/2+int(p[4]*w), height/2+int(p[7]*h), col[3])
-		point(img, width/2+int(p[5]*w), height/2+int(p[7]*h), col[4])
-		point(img, width/2+int(p[6]*w), height/2+int(p[7]*h), col[5])
-		point(img, width/2+int(p[0]*w), height/2+int(p[7]*h), col[6])
+	sc := float32(0.7)
+	aspect := float32(width)/float32(height)
+	h := float32(height)*sc
+	w := h/aspect
+
+	for i := 0; i < 100000; i++ {
+		img.Set(width/2+int(p[1]*w), height/2+int(p[7]*h), col[0])
+		img.Set(width/2+int(p[2]*w), height/2+int(p[7]*h), col[1])
+		img.Set(width/2+int(p[3]*w), height/2+int(p[7]*h), col[2])
+		img.Set(width/2+int(p[4]*w), height/2+int(p[7]*h), col[3])
+		img.Set(width/2+int(p[5]*w), height/2+int(p[7]*h), col[4])
+		img.Set(width/2+int(p[6]*w), height/2+int(p[7]*h), col[5])
+		img.Set(width/2+int(p[0]*w), height/2+int(p[7]*h), col[6])
 
 		p = p.Mul(o)
 		o = o.Mul(q)
